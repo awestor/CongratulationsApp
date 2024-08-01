@@ -15,21 +15,20 @@ class Program
             Console.OutputEncoding = Encoding.UTF8;
 
             Init(DataBase);
-
             while (true)
             {
-                Console.Clear();
-                ChangeColorOutput(" ------------------ Главное меню --------------------");
-                ChangeColorOutput(" |                                                  |");
-                ChangeColorOutput(" |    [1] Добавить новую запись                     |");
-                ChangeColorOutput(" |    [2] Просмотр списка хранящихся записей        |");
-                ChangeColorOutput(" |    [3] Просмотр списка ближайших дат рождения    |");
-                ChangeColorOutput(" |    [4] Редактирование записей                    |");
-                ChangeColorOutput(" |    [5] Удалить запись                            |");
-                ChangeColorOutput(" |    [6] Завершение работы                         |");
-                ChangeColorOutput(" |                                                  |");
-                ChangeColorOutput(" ----------------------------------------------------");
                 Console.ForegroundColor = ConsoleColor.White;
+                Console.Clear();
+                Console.WriteLine(" ------------------ Главное меню --------------------");
+                Console.WriteLine(" |                                                  |");
+                Console.WriteLine(" |    [1] Добавить новую запись                     |");
+                Console.WriteLine(" |    [2] Просмотр списка хранящихся записей        |");
+                Console.WriteLine(" |    [3] Просмотр списка ближайших дат рождения    |");
+                Console.WriteLine(" |    [4] Редактирование записей                    |");
+                Console.WriteLine(" |    [5] Удалить запись                            |");
+                Console.WriteLine(" |    [6] Завершение работы                         |");
+                Console.WriteLine(" |                                                  |");
+                Console.WriteLine(" ----------------------------------------------------");
                 Console.WriteLine(" Выберете опцию:");
                 Console.Write(" ->");
                 var choice = Console.ReadLine();
@@ -73,7 +72,7 @@ class Program
             currentDate.birthday.Year == today.Year ||
             currentDate.birthday.Month < today.AddMonths(2).Month &&
             currentDate.birthday.Year == today.Year);
-        SortRecords(upcomingDate);
+        _contextManager.SortRecords(upcomingDate);
     }
 
     private static void InputNewRecord()
@@ -100,7 +99,7 @@ class Program
     private static void OutputAllRecords(ApplicationDB DataBase)
     {
         var birthdays = DataBase.data;
-        SortRecords(birthdays);
+        _contextManager.SortRecords(birthdays);
     }
 
     
@@ -132,75 +131,10 @@ class Program
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(" Некорректный ID.");
         }
-        Console.ResetColor();
-    }
-    private static void ChangeColorOutput(string message)
-    {
-        foreach (char col in message)
-        {
-            if (col == '-' || col == '|')
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write(col);
                 Console.ResetColor();
             }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(col);
-                Console.ResetColor();
-            }
-        }
-        Console.WriteLine();
-    }
-    private static void SortRecords(IQueryable<Context> birthdays)
-    {
-        var choice = "";
-        while (true)
-        {
-            Console.Clear();
-            ChangeColorOutput(" ---------- Записи дней рождения ----------");
-            ChangeColorOutput(" |                                        |");
-            ChangeColorOutput(" |    [1] Вывести без сортировки          |");
-            ChangeColorOutput(" |    [2] Вывести с сортировкой по ID     |");
-            ChangeColorOutput(" |    [3] Вывести с сортировкой по дате   |");
-            ChangeColorOutput(" |    [4] Главное меню                    |");
-            ChangeColorOutput(" |                                        |");
-            ChangeColorOutput(" ------------------------------------------");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(" Выберите опцию:");
-            Console.Write(" ->");
-            choice = Console.ReadLine();
-            Console.ResetColor();
-            Console.WriteLine();
 
-            switch (choice)
-            {
-                case "1":
-                    Console.WriteLine(" Список записей:");
-                    _contextManager.Output(birthdays.ToList());
-                    break;
-                case "2":
-                    Console.WriteLine(" Список записей:");
-                    _contextManager.Output(birthdays.OrderBy(b => b.id).ToList());
-                    break;
-                case "3":
-                    Console.WriteLine(" Список записей:");
-                    _contextManager.Output(birthdays.OrderBy(b => b.birthday).ToList());
-                    break;
-                case "4":
-                    return;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(" Выбранная опция отсутствует, попробуйте снова.");
-                    Console.ResetColor();
-                    break;
-            }
 
-            Console.WriteLine(" Для продолжения нажмите любую клавишу... ");
-            Console.ReadKey();
-        }
-    }
     private static void Init(ApplicationDB DataBase)
     {
         var today = DateTime.SpecifyKind(DateTime.Today, DateTimeKind.Utc);

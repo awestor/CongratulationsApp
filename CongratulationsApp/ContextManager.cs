@@ -76,5 +76,53 @@ namespace CongratulationsApp
             }
             Console.ResetColor();
         }
+        public void SortRecords(IQueryable<Context> birthdays)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            var choice = "";
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(" ---------- Записи дней рождения ----------");
+                Console.WriteLine(" |                                        |");
+                Console.WriteLine(" |    [1] Вывести без сортировки          |");
+                Console.WriteLine(" |    [2] Вывести с сортировкой по ID     |");
+                Console.WriteLine(" |    [3] Вывести с сортировкой по дате   |");
+                Console.WriteLine(" |    [4] Главное меню                    |");
+                Console.WriteLine(" |                                        |");
+                Console.WriteLine(" ------------------------------------------");
+                Console.WriteLine(" Выберите опцию:");
+                Console.Write(" ->");
+                choice = Console.ReadLine();
+                Console.ResetColor();
+                Console.WriteLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        Console.WriteLine(" Список записей:");
+                        Output(birthdays.ToList());
+                        break;
+                    case "2":
+                        Console.WriteLine(" Список записей:");
+                        Output(birthdays.OrderBy(b => b.id).ToList());
+                        break;
+                    case "3":
+                        Console.WriteLine(" Список записей:");
+                        Output(birthdays.OrderBy(b => b.birthday).ToList());
+                        break;
+                    case "4":
+                        return;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(" Выбранная опция отсутствует, попробуйте снова.");
+                        Console.ResetColor();
+                        break;
+                }
+
+                Console.WriteLine(" Для продолжения нажмите любую клавишу... ");
+                Console.ReadKey();
+            }
+        }
     }
 }
